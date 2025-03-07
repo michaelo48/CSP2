@@ -167,8 +167,6 @@ public class Database {
      *            The name to search for
      */
     public void search(String name) {
-        // Note: The SkipList's search method is from the starter code and uses ArrayList.
-        // We're using it here, but not importing it directly in this class.
         java.util.ArrayList<KVPair<String, Point>> results = skipList.search(name);
         
         if (results.isEmpty()) {
