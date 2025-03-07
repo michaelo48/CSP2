@@ -76,7 +76,7 @@ public interface QuadNode extends Comparable<QuadNode> {
      * @return Number of nodes visited during the search
      */
     public int regionsearch(int x, int y, int w, int h, 
-            int regionX, int regionY, int size, java.util.ArrayList<Point> results);
+            int regionX, int regionY, int size, PointList results);
     
     /**
      * Finds duplicate points in the quadtree
@@ -88,11 +88,11 @@ public interface QuadNode extends Comparable<QuadNode> {
      * @param size
      *            The size of the current region
      * @param duplicates
-     *            Set to store coordinates with duplicate points
+     *            List to store coordinates with duplicate points
      * @return Number of nodes visited
      */
     public int findDuplicates(int regionX, int regionY, int size, 
-            java.util.Set<java.awt.Point> duplicates);
+            CoordinateList duplicates);
     
     /**
      * Prints the node contents for dumping the quadtree

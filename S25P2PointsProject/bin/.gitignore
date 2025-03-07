@@ -10,3 +10,16 @@
 /uhuh.class
 /QuadTreeInterface.class
 /QuadNode.class
+/QuadTree.class
+/PointList.class
+/CoordinateSet.class
+/EmptyNode.class
+/LeafNode.class
+/Coordinate.class
+/PointsList.class
+/CoordinateList.class
+/InternalNode.class
+/DuplicateResult.class
+/DuplicatesResult.class
+/dxfd.class
+/RegionSearchResult.class
