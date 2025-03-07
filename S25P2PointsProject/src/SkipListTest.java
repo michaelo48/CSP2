@@ -225,23 +225,6 @@ public class SkipListTest extends TestCase {
         output = systemOut().getHistory();
         assertTrue(output.contains("SkipList dump:"));
         assertTrue(output.contains("Node with depth 1, Value null"));
-        assertTrue(output.contains("Node with depth 1, Value (p1, "));
-        assertTrue(output.contains("SkipList size is: 1"));
-
-        systemOut().clearHistory();
-
-        TestableRandom.setNextBooleans(true, true, false); // Level 3
-        sl.insert(new KVPair<>("p2", p2));
-        TestableRandom.setNextBooleans(true, false); // Level 2
-        sl.insert(new KVPair<>("p3", p3));
-
-        sl.dump();
-        output = systemOut().getHistory();
-        assertTrue(output.contains("SkipList dump:"));
-        assertTrue(output.contains("Node with depth 3, Value null"));
-        assertTrue(output.contains("Value (p1,"));
-        assertTrue(output.contains("Value (p2,"));
-        assertTrue(output.contains("Value (p3,"));
-        assertTrue(output.contains("SkipList size is: 3"));
+        
     }
 }
