@@ -56,16 +56,6 @@ public class Coordinate {
     }
     
     /**
-     * Generates a hash code for this coordinate
-     * 
-     * @return The hash code
-     */
-    @Override
-    public int hashCode() {
-        return 31 * x + y;
-    }
-    
-    /**
      * String representation of the coordinate
      * 
      * @return String in format "(x, y)"

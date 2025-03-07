@@ -1,14 +1,11 @@
 
-public class coordinatetest {
-
-}
 import student.TestCase;
 
 /**
  * Tests the Coordinate class by verifying the functionality
  * of all its methods.
  * 
- * @author <your_name>
+ * @author michaelo48
  * @version 03.07.2025
  */
 public class CoordinateTest extends TestCase {
