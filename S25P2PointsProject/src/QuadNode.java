@@ -2,8 +2,8 @@
  * Interface for QuadTree nodes that defines methods implemented by
  * all node types (internal, leaf, empty)
  * 
- * @author Your Name
- * @version 2025
+ * @author michaelo48
+ * @version 03.07.2025
  */
 public interface QuadNode extends Comparable<QuadNode> {
     
