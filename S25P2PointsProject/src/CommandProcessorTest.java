@@ -5,9 +5,8 @@ import student.TestCase;
 
 /**
  * This class tests the CommandProcessor class.
- * Test each possible command to ensure they work properly.
  * 
- * @author <your_name>
+ * @author michaelo48
  * @version 03.07.2025
  */
 public class CommandProcessorTest extends TestCase {
@@ -27,22 +26,21 @@ public class CommandProcessorTest extends TestCase {
      * Tests the processor method with various commands.
      */
     public void testProcessor() {
-        // Test insert command
+
         commandProcessor.processor("insert A 10 20");
         String output = systemOut().getHistory();
-        // Assuming Database.insert() prints a confirmation message
-        // Check if the output contains relevant information
+
         
         systemOut().clearHistory();
         
-        // Test remove by name
+        
         commandProcessor.processor("remove A");
         output = systemOut().getHistory();
-        // Check for appropriate output
+        
         
         systemOut().clearHistory();
         
-        // Test remove by coordinates
+        
         commandProcessor.processor("insert B 15 25");
         systemOut().clearHistory();
         commandProcessor.processor("remove 15 25");

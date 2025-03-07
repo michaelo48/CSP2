@@ -10,10 +10,6 @@ import java.util.Scanner;
  * @version 03.07.2025
  */
 public class CommandProcessor {
-
-    // the database object to manipulate the
-    // commands that the command processor
-    // feeds to it
     private Database data;
 
     /**
@@ -65,7 +61,6 @@ public class CommandProcessor {
         String command = arr[0].toLowerCase(); // the command will be the first of these
                                                // elements, converted to lowercase
         
-        // calls the appropriate method based on the command
         if (command.equals("insert")) {
             // Format: insert name x y
             String name = arr[1];
@@ -75,13 +70,10 @@ public class CommandProcessor {
             data.insert(name, x, y);
         }
         else if (command.equals("remove")) {
-            // Format: remove name or remove x y
             if (arr.length == 2) {
-                // Remove by name
                 data.remove(arr[1]);
             }
             else {
-                // Remove by coordinates
                 int x = Integer.parseInt(arr[1]);
                 int y = Integer.parseInt(arr[2]);
                 
@@ -89,7 +81,6 @@ public class CommandProcessor {
             }
         }
         else if (command.equals("regionsearch")) {
-            // Format: regionsearch x y w h
             int x = Integer.parseInt(arr[1]);
             int y = Integer.parseInt(arr[2]);
             int w = Integer.parseInt(arr[3]);
@@ -98,19 +89,15 @@ public class CommandProcessor {
             data.regionsearch(x, y, w, h);
         }
         else if (command.equals("duplicates")) {
-            // Format: duplicates
             data.duplicates();
         }
         else if (command.equals("search")) {
-            // Format: search name
             data.search(arr[1]);
         }
         else if (command.equals("dump")) {
-            // Format: dump
             data.dump();
         }
         else {
-            // Unrecognized command
             System.out.println("Unrecognized command.");
         }
     }

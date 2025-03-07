@@ -1,11 +1,6 @@
 /**
  * This class is responsible for interfacing between the command processor and
- * the SkipList and QuadTree. The responsibility of this class is to further 
- * interpret variations of commands and do some error checking of those commands. 
- * This class further interpreting the command means that the two types of remove
- * will be overloaded methods for if we are removing by name or by coordinates.
- * Many of these methods will simply call the appropriate version of the
- * SkipList or QuadTree method after some preparation.
+ * the SkipList and QuadTree.
  * 
  * @author michaelo48
  * @version 03.07.2025
