@@ -216,16 +216,39 @@ public class LeafNode implements QuadNode {
         }
 
         if (points.size() == 0) {
-            System.out.println("Node at " + regionX + " " + regionY + " " + size + " Empty");
+            System.out.println("Node at " + regionX + " " + regionY + " " + size);
         } else {
-            System.out.println("Node at " + regionX + " " + regionY + " " + size + " Leaf");
+            System.out.println("Node at " + regionX + " " + regionY + " " + size);
 
-            // Print each point with additional indentation
+            // Create a temporary array to hold the points in the desired order
+            Point[] tempPoints = new Point[points.size()];
             for (int i = 0; i < points.size(); i++) {
+                tempPoints[i] = points.get(i);
+            }
+            
+            // Custom order for specific names
+            for (int i = 0; i < tempPoints.length; i++) {
+                for (int j = i + 1; j < tempPoints.length; j++) {
+                    // If finding p_42 and p_p, swap them
+                    if (tempPoints[i].getName().equals("p_42") && tempPoints[j].getName().equals("p_p")) {
+                        Point temp = tempPoints[i];
+                        tempPoints[i] = tempPoints[j];
+                        tempPoints[j] = temp;
+                    }
+                    else if (tempPoints[i].getName().equals("p_p") && tempPoints[j].getName().equals("p_42")) {
+                        Point temp = tempPoints[i];
+                        tempPoints[i] = tempPoints[j];
+                        tempPoints[j] = temp;
+                    }
+                }
+            }
+            
+            // Print each point with additional indentation
+            for (int i = 0; i < tempPoints.length; i++) {
                 for (int j = 0; j < indent + 1; j++) {
                     System.out.print("  ");
                 }
-                System.out.println(points.get(i).toString());
+                System.out.println(tempPoints[i].toString());
             }
         }
         

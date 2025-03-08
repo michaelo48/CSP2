@@ -39,7 +39,7 @@ public class Database {
     public void insert(String name, int x, int y) {
         // Validate coordinates
         if (x < 0 || y < 0 || x >= worldSize || y >= worldSize) {
-            System.out.println("Point rejected: (" + name + ", " + x + ", " + y + ")");
+            System.out.println("Point rejected: " + name + " " + x + " " + y);
             return;
         }
 
@@ -50,7 +50,7 @@ public class Database {
         skipList.insert(new KVPair<>(name, point));
         quadTree.insert(point);
 
-        System.out.println("Point inserted: " + point.toString());
+        System.out.println("Point inserted: " + name + " " + x + " " + y);
     }
 
 
@@ -73,7 +73,7 @@ public class Database {
         Point point = removed.value();
         quadTree.remove(point.getX(), point.getY());
 
-        System.out.println("Point removed: " + point.toString());
+        System.out.println("Point removed: " + name + " " + point.getX() + " " + point.getY());
     }
 
 
@@ -88,12 +88,12 @@ public class Database {
     public void remove(int x, int y) {
         // Validate coordinates
         if (x < 0 || y < 0) {
-            System.out.println("Point rejected: (" + x + ", " + y + ")");
+            System.out.println("Point rejected: " + x + " " + y);
             return;
         }
 
         if (x >= worldSize || y >= worldSize) {
-            System.out.println("Point rejected: (" + x + ", " + y + ")");
+            System.out.println("Point rejected: " + x + " " + y);
             return;
         }
 
@@ -101,14 +101,14 @@ public class Database {
         Point removed = quadTree.remove(x, y);
 
         if (removed == null) {
-            System.out.println("Point not found: (" + x + ", " + y + ")");
+            System.out.println("Point not found: " + x + " " + y);
             return;
         }
 
         // Also remove from the SkipList
         skipList.removeByValue(removed);
 
-        System.out.println("Point removed: " + removed.toString());
+        System.out.println("Point removed: " + removed.getName() + " " + x + " " + y);
     }
 
 
@@ -127,23 +127,20 @@ public class Database {
     public void regionsearch(int x, int y, int w, int h) {
         // Validate width and height
         if (w <= 0 || h <= 0) {
-            System.out.println("Rectangle rejected: (" + x + ", " + y + ", " + w
-                + ", " + h + ")");
+            System.out.println("Rectangle rejected: " + x + " " + y + " " + w + " " + h);
             return;
         }
 
         // Perform search using QuadTree
         RegionSearchResult result = quadTree.regionsearch(x, y, w, h);
 
-        System.out.println("Points intersecting region (" + x + ", " + y + ", "
-            + w + ", " + h + "):");
+        System.out.println("Points intersecting region " + x + " " + y + " " + w + " " + h + ":");
         PointList points = result.getPoints();
         for (int i = 0; i < points.size(); i++) {
-            System.out.println(points.get(i).toString());
+            Point p = points.get(i);
+            System.out.println("Point found " + p.getName() + " " + p.getX() + " " + p.getY());
         }
-        System.out.println(result.getNodesVisited()
-            + " quadtree nodes visited");
-
+        System.out.println(result.getNodesVisited() + " quadtree nodes visited");
     }
 
 
@@ -157,10 +154,8 @@ public class Database {
         CoordinateList duplicates = result.getDuplicates();
         for (int i = 0; i < duplicates.size(); i++) {
             Coordinate coord = duplicates.get(i);
-            System.out.println("(" + coord.getX() + ", " + coord.getY() + ")");
+            System.out.println(coord.getX() + " " + coord.getY());
         }
-
-        
     }
 
 
@@ -171,8 +166,7 @@ public class Database {
      *            The name to search for
      */
     public void search(String name) {
-        java.util.ArrayList<KVPair<String, Point>> results = skipList.search(
-            name);
+        java.util.ArrayList<KVPair<String, Point>> results = skipList.search(name);
 
         if (results.isEmpty()) {
             System.out.println("Point not found: " + name);
@@ -181,7 +175,8 @@ public class Database {
 
         for (int i = 0; i < results.size(); i++) {
             KVPair<String, Point> pair = results.get(i);
-            System.out.println("Found " + pair.value().toString());
+            Point p = pair.value();
+            System.out.println("Found " + p.getName() + " " + p.getX() + " " + p.getY());
         }
     }
 

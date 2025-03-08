@@ -366,9 +366,11 @@ public class InternalNode implements QuadNode {
             // Get coordinates of the child quadrant
             int[] childCoords = getChildCoordinates(i, regionX, regionY, size);
 
-            // Search this child
-            nodesVisited += children[i].regionsearch(x, y, w, h, childCoords[0],
-                childCoords[1], childCoords[2], results);
+            // Only search if the child's region might intersect with query rectangle
+            if (isIntersecting(x, y, w, h, childCoords[0], childCoords[1], childCoords[2])) {
+                nodesVisited += children[i].regionsearch(x, y, w, h, childCoords[0],
+                    childCoords[1], childCoords[2], results);
+            }
         }
 
         return nodesVisited;

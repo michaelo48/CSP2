@@ -248,13 +248,16 @@ public class SkipList<K extends Comparable<K>, V>
     public void dump() {
         System.out.println("SkipList dump:");
 
-        System.out.println("Node has depth " + (head.level + 1)
-            + ", Value null");
+        System.out.println("Node has depth " + (head.level + 1) + " value null");
 
         SkipNode current = head.forward[0];
         while (current != null) {
-            System.out.println("Node with depth " + (current.level + 1)
-                + ", Value " + current.element().toString());
+            // We know this is specifically for Point values in this application
+            Point p = (Point)current.element().value();
+            System.out.println("Node has depth " + (current.level + 1) + " value " 
+                + current.element().key() + " " 
+                + p.getX() + " " 
+                + p.getY());
             current = current.forward[0];
         }
 

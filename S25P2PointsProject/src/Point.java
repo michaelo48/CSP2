@@ -87,10 +87,10 @@ public class Point {
     /**
      * String representation of the point
      * 
-     * @return String in the format "(name, x, y)"
+     * @return String in the format "name x y"
      */
     @Override
     public String toString() {
-        return "(" + name + ", " + x + ", " + y + ")";
+        return name + " " + x + " " + y;
     }
 }
