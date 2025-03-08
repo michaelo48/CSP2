@@ -42,14 +42,12 @@ public class CoordinateList {
      * @return True if added, false if already present
      */
     public boolean add(Coordinate coord) {
-        // Check if coordinate already exists
         for (int i = 0; i < size; i++) {
             if (coordinates[i].equals(coord)) {
                 return false;
             }
         }
         
-        // Add the new coordinate
         if (size >= coordinates.length) {
             expandCapacity();
         }
