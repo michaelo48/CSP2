@@ -21,3 +21,8 @@
 /SkipList.class
 /SkipListTest.class
 /CoordinateListTest.class
+/DatabaseTest.class
+/EmptyNodeTest.class
+/InternalNodeTest.class
+/LeafNodeTest.class
+/PointTest.class
