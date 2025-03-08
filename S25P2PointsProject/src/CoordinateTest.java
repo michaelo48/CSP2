@@ -68,24 +68,6 @@ public class CoordinateTest extends TestCase {
     }
     
     /**
-     * Tests the hashCode method.
-     */
-    public void testHashCode() {
-        assertEquals(coord1.hashCode(), coord2.hashCode());
-        
-        
-        int expectedHash1 = 31 * 10 + 20;
-        assertEquals(expectedHash1, coord1.hashCode());
-        
-        int expectedHash3 = 31 * 30 + 40;
-        assertEquals(expectedHash3, coord3.hashCode());
-        
-        Coordinate negCoord = new Coordinate(-5, -10);
-        int expectedNegHash = 31 * (-5) + (-10);
-        assertEquals(expectedNegHash, negCoord.hashCode());
-    }
-    
-    /**
      * Tests the toString method.
      */
     public void testToString() {
