@@ -7,18 +7,21 @@
 public class RegionSearchResult {
     private PointList points;
     private int nodesVisited;
-    
+
     /**
      * Creates a new result container
      * 
-     * @param points The points found in the search
-     * @param nodesVisited The number of nodes visited during search
+     * @param points
+     *            The points found in the search
+     * @param nodesVisited
+     *            The number of nodes visited during search
      */
     public RegionSearchResult(PointList points, int nodesVisited) {
         this.points = points;
         this.nodesVisited = nodesVisited;
     }
-    
+
+
     /**
      * Gets the points found in the search
      * 
@@ -27,7 +30,8 @@ public class RegionSearchResult {
     public PointList getPoints() {
         return points;
     }
-    
+
+
     /**
      * Gets the number of nodes visited
      * 

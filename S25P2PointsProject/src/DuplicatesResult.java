@@ -7,18 +7,21 @@
 public class DuplicatesResult {
     private CoordinateList duplicates;
     private int nodesVisited;
-    
+
     /**
      * Creates a new result container
      * 
-     * @param duplicates The duplicate coordinates found
-     * @param nodesVisited The number of nodes visited during search
+     * @param duplicates
+     *            The duplicate coordinates found
+     * @param nodesVisited
+     *            The number of nodes visited during search
      */
     public DuplicatesResult(CoordinateList duplicates, int nodesVisited) {
         this.duplicates = duplicates;
         this.nodesVisited = nodesVisited;
     }
-    
+
+
     /**
      * Gets the duplicate coordinates
      * 
@@ -27,7 +30,8 @@ public class DuplicatesResult {
     public CoordinateList getDuplicates() {
         return duplicates;
     }
-    
+
+
     /**
      * Gets the number of nodes visited
      * 

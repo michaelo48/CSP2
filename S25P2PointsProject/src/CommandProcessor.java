@@ -21,35 +21,37 @@ public class CommandProcessor {
         data = database;
     }
 
+
     /**
      * Reads and processes commands from a file
      * 
      * @param file
      *            The file to read from
      * @throws FileNotFoundException
-     *            If the file cannot be found
+     *             If the file cannot be found
      */
     public void readCmdFile(File file) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
-        
+
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
-            
+
             // Skip empty lines
             if (line.isEmpty()) {
                 continue;
             }
-            
+
             // Process the command
             processor(line);
         }
-        
+
         scanner.close();
     }
 
+
     /**
      * This method parses keywords in the line and calls methods in the
-     * database as required. 
+     * database as required.
      * 
      * @param line
      *            a single line from the text file
@@ -58,15 +60,17 @@ public class CommandProcessor {
         // converts the string of the line into an
         // array of its space (" ") delimited elements
         String[] arr = line.split("\\s{1,}");
-        String command = arr[0].toLowerCase(); // the command will be the first of these
-                                               // elements, converted to lowercase
-        
+        String command = arr[0].toLowerCase(); // the command will be the first
+                                               // of these
+                                               // elements, converted to
+                                               // lowercase
+
         if (command.equals("insert")) {
             // Format: insert name x y
             String name = arr[1];
             int x = Integer.parseInt(arr[2]);
             int y = Integer.parseInt(arr[3]);
-            
+
             data.insert(name, x, y);
         }
         else if (command.equals("remove")) {
@@ -76,7 +80,7 @@ public class CommandProcessor {
             else {
                 int x = Integer.parseInt(arr[1]);
                 int y = Integer.parseInt(arr[2]);
-                
+
                 data.remove(x, y);
             }
         }
@@ -85,7 +89,7 @@ public class CommandProcessor {
             int y = Integer.parseInt(arr[2]);
             int w = Integer.parseInt(arr[3]);
             int h = Integer.parseInt(arr[4]);
-            
+
             data.regionsearch(x, y, w, h);
         }
         else if (command.equals("duplicates")) {

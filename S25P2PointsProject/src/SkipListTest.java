@@ -24,6 +24,7 @@ public class SkipListTest extends TestCase {
         p3 = new Point("P3", 5, 6);
     }
 
+
     /***
      * Example 1: Test `randomLevel` method with
      * predetermined random values using `TestableRandom`
@@ -41,6 +42,7 @@ public class SkipListTest extends TestCase {
         // Compare the values
         assertEquals(expectedLevelValue, randomLevelValue);
     }
+
 
     /***
      * Example 2: Test `randomLevel` method with
@@ -60,6 +62,7 @@ public class SkipListTest extends TestCase {
         assertEquals(expectedLevelValue, randomLevelValue);
     }
 
+
     /**
      * Tests the search method of SkipList
      */
@@ -70,13 +73,14 @@ public class SkipListTest extends TestCase {
         sl.insert(new KVPair<String, Point>("p1", p1));
         sl.insert(new KVPair<String, Point>("p2", p2));
         sl.insert(new KVPair<String, Point>("p2", p3));
-        
+
         assertFalse(sl.search("p1").isEmpty());
 
         assertEquals(1, sl.search("p1").size());
         assertEquals(p1, sl.search("p1").get(0).value());
         assertEquals(2, sl.search("p2").size());
     }
+
 
     /**
      * Tests the getSize method of SkipList
@@ -99,6 +103,7 @@ public class SkipListTest extends TestCase {
         assertEquals(0, sl.size());
     }
 
+
     /**
      * Tests the adjustHead method of SkipList
      */
@@ -119,6 +124,7 @@ public class SkipListTest extends TestCase {
         assertEquals(2, sl.size());
         assertTrue(sl.search("p2").isEmpty());
     }
+
 
     /**
      * Tests the insert method of SkipList
@@ -143,6 +149,7 @@ public class SkipListTest extends TestCase {
         sl.insert(new KVPair<>("C", new Point("C", 4, 4)));
         assertEquals(4, sl.size());
     }
+
 
     /**
      * Tests the remove method of SkipList
@@ -169,6 +176,7 @@ public class SkipListTest extends TestCase {
         assertEquals(2, sl.size());
         assertNull(sl.remove("p2"));
     }
+
 
     /**
      * Tests the removeByValue method of SkipList
@@ -207,6 +215,7 @@ public class SkipListTest extends TestCase {
         assertEquals(1, sl.size());
     }
 
+
     /**
      * Tests the dump method of SkipList
      */
@@ -225,6 +234,6 @@ public class SkipListTest extends TestCase {
         output = systemOut().getHistory();
         assertTrue(output.contains("SkipList dump:"));
         assertTrue(output.contains("Node with depth 1, Value null"));
-        
+
     }
 }

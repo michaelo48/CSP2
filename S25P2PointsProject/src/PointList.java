@@ -8,7 +8,7 @@ public class PointList {
     private Point[] points;
     private int size;
     private static final int DEFAULT_CAPACITY = 10;
-    
+
     /**
      * Creates a new PointList with default capacity
      */
@@ -16,7 +16,8 @@ public class PointList {
         points = new Point[DEFAULT_CAPACITY];
         size = 0;
     }
-    
+
+
     /**
      * Gets the number of points in the list
      * 
@@ -25,7 +26,8 @@ public class PointList {
     public int size() {
         return size;
     }
-    
+
+
     /**
      * Checks if the list is empty
      * 
@@ -34,11 +36,13 @@ public class PointList {
     public boolean isEmpty() {
         return size == 0;
     }
-    
+
+
     /**
      * Adds a point to the list
      * 
-     * @param point The point to add
+     * @param point
+     *            The point to add
      */
     public void add(Point point) {
         if (size >= points.length) {
@@ -46,7 +50,8 @@ public class PointList {
         }
         points[size++] = point;
     }
-    
+
+
     /**
      * Expands the capacity of the list
      */
@@ -57,11 +62,13 @@ public class PointList {
         }
         points = newArray;
     }
-    
+
+
     /**
      * Gets a point at the specified index
      * 
-     * @param index The index
+     * @param index
+     *            The index
      * @return The point at that index
      */
     public Point get(int index) {
@@ -70,11 +77,13 @@ public class PointList {
         }
         return points[index];
     }
-    
+
+
     /**
      * Removes a point at the specified index
      * 
-     * @param index The index
+     * @param index
+     *            The index
      * @return The removed point
      */
     public Point remove(int index) {
@@ -82,29 +91,32 @@ public class PointList {
             throw new IndexOutOfBoundsException("Index: " + index);
         }
         Point removed = points[index];
-        
+
         // Shift elements to fill the gap
         for (int i = index; i < size - 1; i++) {
             points[i] = points[i + 1];
         }
-        
+
         // Clear the last element and decrement size
         points[--size] = null;
-        
+
         return removed;
     }
-    
+
+
     /**
      * Adds all points from another list to this list
      * 
-     * @param otherList The list to add from
+     * @param otherList
+     *            The list to add from
      */
     public void addAll(PointList otherList) {
         for (int i = 0; i < otherList.size(); i++) {
             add(otherList.get(i));
         }
     }
-    
+
+
     /**
      * Creates a copy of this list
      * 
@@ -117,7 +129,8 @@ public class PointList {
         }
         return newList;
     }
-    
+
+
     /**
      * Clears all elements from the list
      */

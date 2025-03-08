@@ -75,8 +75,7 @@ public class SkipList<K extends Comparable<K>, V>
         current = current.forward[0];
 
         // Collect all matching keys
-        while (current != null && current.element().key().compareTo(
-            key) == 0) {
+        while (current != null && current.element().key().compareTo(key) == 0) {
             results.add(current.element());
             current = current.forward[0];
         }

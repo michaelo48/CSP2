@@ -6,7 +6,7 @@
  * @version 03.07.2025
  */
 public interface QuadNode extends Comparable<QuadNode> {
-    
+
     /**
      * Inserts a point into the quadtree
      * 
@@ -21,7 +21,8 @@ public interface QuadNode extends Comparable<QuadNode> {
      * @return The node after insertion
      */
     public QuadNode insert(Point point, int x, int y, int size);
-    
+
+
     /**
      * Removes a point at the specified coordinates
      * 
@@ -37,8 +38,14 @@ public interface QuadNode extends Comparable<QuadNode> {
      *            The size of the current region
      * @return The node after removal and a removed point if successful
      */
-    public KVPair<QuadNode, Point> remove(int x, int y, int regionX, int regionY, int size);
-    
+    public KVPair<QuadNode, Point> remove(
+        int x,
+        int y,
+        int regionX,
+        int regionY,
+        int size);
+
+
     /**
      * Removes a point with the specified name
      * 
@@ -52,8 +59,13 @@ public interface QuadNode extends Comparable<QuadNode> {
      *            The size of the current region
      * @return The node after removal and a removed point if successful
      */
-    public KVPair<QuadNode, Point> remove(String name, int regionX, int regionY, int size);
-    
+    public KVPair<QuadNode, Point> remove(
+        String name,
+        int regionX,
+        int regionY,
+        int size);
+
+
     /**
      * Searches for points within a query rectangle
      * 
@@ -75,9 +87,17 @@ public interface QuadNode extends Comparable<QuadNode> {
      *            List to store found points
      * @return Number of nodes visited during the search
      */
-    public int regionsearch(int x, int y, int w, int h, 
-            int regionX, int regionY, int size, PointList results);
-    
+    public int regionsearch(
+        int x,
+        int y,
+        int w,
+        int h,
+        int regionX,
+        int regionY,
+        int size,
+        PointList results);
+
+
     /**
      * Finds duplicate points in the quadtree
      * 
@@ -91,9 +111,13 @@ public interface QuadNode extends Comparable<QuadNode> {
      *            List to store coordinates with duplicate points
      * @return Number of nodes visited
      */
-    public int findDuplicates(int regionX, int regionY, int size, 
-            CoordinateList duplicates);
-    
+    public int findDuplicates(
+        int regionX,
+        int regionY,
+        int size,
+        CoordinateList duplicates);
+
+
     /**
      * Prints the node contents for dumping the quadtree
      * 
@@ -101,7 +125,8 @@ public interface QuadNode extends Comparable<QuadNode> {
      *            Current indentation level
      */
     public void dump(int indent);
-    
+
+
     /**
      * Checks if this node is an empty leaf
      * 
