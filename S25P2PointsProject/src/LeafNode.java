@@ -57,7 +57,21 @@ public class LeafNode implements QuadNode {
             // Insert all points into the new internal node
             QuadNode newNode = internal;
             for (int i = 0; i < currentPoints.size(); i++) {
-                newNode = newNode.insert(currentPoints.get(i), x, y, size);
+                Point p = currentPoints.get(i);
+                
+                // IMPORTANT FIX: Directly insert into internal node without recursion
+                // Get the quadrant for this point
+                int quadrant = getQuadrant(p, x, y, size);
+                int halfSize = size / 2;
+                
+                // Calculate new coordinates for the child quadrant
+                int childX = x;
+                int childY = y;
+                if (quadrant == 1 || quadrant == 3) childX += halfSize;
+                if (quadrant == 2 || quadrant == 3) childY += halfSize;
+                
+                // Insert directly into the appropriate child of the internal node
+                ((InternalNode)newNode).insertIntoChild(p, quadrant, childX, childY, halfSize);
             }
 
             return newNode;
@@ -65,7 +79,38 @@ public class LeafNode implements QuadNode {
 
         return this;
     }
+    
+    /**
+     * Helper method to determine the quadrant of a point
+     * 
+     * @param point The point to check
+     * @param x The x-coordinate of the region
+     * @param y The y-coordinate of the region
+     * @param size The size of the region
+     * @return The quadrant (0=NW, 1=NE, 2=SW, 3=SE)
+     */
+    private int getQuadrant(Point point, int x, int y, int size) {
+        int halfSize = size / 2;
+        int midX = x + halfSize;
+        int midY = y + halfSize;
 
+        if (point.getX() < midX) {
+            if (point.getY() < midY) {
+                return 0; // NW
+            }
+            else {
+                return 2; // SW
+            }
+        }
+        else {
+            if (point.getY() < midY) {
+                return 1; // NE
+            }
+            else {
+                return 3; // SE
+            }
+        }
+    }
 
     @Override
     public KVPair<QuadNode, Point> remove(
@@ -154,8 +199,7 @@ public class LeafNode implements QuadNode {
                 if (points.get(i).sameLocation(points.get(j))) {
                     // Add the duplicate location to the list
                     duplicates.add(points.get(i).getX(), points.get(i).getY());
-                    break; // Found a duplicate for this point, move to next
-                           // point
+                    break; // Found a duplicate for this point, move to next point
                 }
             }
         }

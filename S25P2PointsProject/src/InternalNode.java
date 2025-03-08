@@ -55,7 +55,80 @@ public class InternalNode implements QuadNode {
             }
         }
     }
-
+    
+    /**
+     * Directly inserts a point into a child without going through the full insert process
+     * This helps break the recursion cycle
+     * 
+     * @param point The point to insert
+     * @param quadrant The quadrant to insert into (0=NW, 1=NE, 2=SW, 3=SE)
+     * @param childX The x-coordinate of the child region
+     * @param childY The y-coordinate of the child region
+     * @param childSize The size of the child region
+     */
+    public void insertIntoChild(Point point, int quadrant, int childX, int childY, int childSize) {
+        if (children[quadrant] instanceof EmptyNode) {
+            // Create a new leaf node for the first point in this quadrant
+            LeafNode leaf = new LeafNode();
+            leaf.getPoints().add(point);
+            children[quadrant] = leaf;
+        }
+        else if (children[quadrant] instanceof LeafNode) {
+            // Add to existing leaf node
+            LeafNode leaf = (LeafNode)children[quadrant];
+            leaf.getPoints().add(point);
+            
+            // Check if we need to split this leaf node
+            if (leaf.getPoints().size() > 3) {
+                // Check if all points are at the same location
+                boolean allSameLocation = true;
+                Point firstPoint = leaf.getPoints().get(0);
+                for (int i = 1; i < leaf.getPoints().size(); i++) {
+                    if (!firstPoint.sameLocation(leaf.getPoints().get(i))) {
+                        allSameLocation = false;
+                        break;
+                    }
+                }
+                
+                // Only split if points are at different locations
+                if (!allSameLocation) {
+                    // Create a new internal node
+                    InternalNode newInternal = new InternalNode();
+                    
+                    // Distribute all points from the leaf to the new internal node
+                    PointList points = leaf.getPoints().copy();
+                    for (int i = 0; i < points.size(); i++) {
+                        Point p = points.get(i);
+                        int subQuadrant = getQuadrant(p, childX, childY, childSize);
+                        
+                        int halfSize = childSize / 2;
+                        int subX = childX;
+                        int subY = childY;
+                        if (subQuadrant == 1 || subQuadrant == 3) subX += halfSize;
+                        if (subQuadrant == 2 || subQuadrant == 3) subY += halfSize;
+                        
+                        newInternal.insertIntoChild(p, subQuadrant, subX, subY, halfSize);
+                    }
+                    
+                    // Replace the leaf with the new internal node
+                    children[quadrant] = newInternal;
+                }
+            }
+        }
+        else if (children[quadrant] instanceof InternalNode) {
+            // Pass to the internal node
+            InternalNode internal = (InternalNode)children[quadrant];
+            int subQuadrant = getQuadrant(point, childX, childY, childSize);
+            
+            int halfSize = childSize / 2;
+            int subX = childX;
+            int subY = childY;
+            if (subQuadrant == 1 || subQuadrant == 3) subX += halfSize;
+            if (subQuadrant == 2 || subQuadrant == 3) subY += halfSize;
+            
+            internal.insertIntoChild(point, subQuadrant, subX, subY, halfSize);
+        }
+    }
 
     /**
      * Gets the coordinates and size of a child quadrant
@@ -104,37 +177,59 @@ public class InternalNode implements QuadNode {
      * @return True if the node should merge, false otherwise
      */
     private boolean shouldMerge() {
+        int emptyCount = 0;
+        int leafCount = 0;
         int totalPoints = 0;
         PointList allPoints = new PointList();
 
-        // Count points and collect them
+        // Count different node types and collect points
         for (int i = 0; i < 4; i++) {
-            if (children[i] instanceof LeafNode) {
-                LeafNode leaf = (LeafNode)children[i];
-                totalPoints += leaf.getPoints().size();
-                allPoints.addAll(leaf.getPoints());
+            if (children[i] instanceof EmptyNode) {
+                emptyCount++;
             }
-            else if (!(children[i] instanceof EmptyNode)) {
+            else if (children[i] instanceof LeafNode) {
+                leafCount++;
+                LeafNode leaf = (LeafNode)children[i];
+                int leafSize = leaf.getPoints().size();
+                totalPoints += leafSize;
+                
+                // Collect points for checking if all have same coordinates
+                for (int j = 0; j < leafSize; j++) {
+                    allPoints.add(leaf.getPoints().get(j));
+                }
+            }
+            else {
                 // If any child is not a leaf or empty, we can't merge
                 return false;
             }
         }
 
-        // If total points <= 3, we should merge
-        if (totalPoints <= 3) {
+        // If all children are empty, this should become an empty node
+        if (emptyCount == 4) {
             return true;
         }
-
-        // Check if all points have the same coordinates
-        if (totalPoints > 0) {
-            Point first = allPoints.get(0);
-            for (int i = 1; i < allPoints.size(); i++) {
-                if (!first.sameLocation(allPoints.get(i))) {
-                    return false;
-                }
+        
+        // If all nodes are either empty or leaf nodes
+        if (emptyCount + leafCount == 4) {
+            // If total points <= 3, we should merge
+            if (totalPoints <= 3) {
+                return true;
             }
-            // All points have same location, should merge
-            return true;
+            
+            // Check if all points have the same coordinates
+            if (totalPoints > 0) {
+                Point first = allPoints.get(0);
+                boolean allSame = true;
+                
+                for (int i = 1; i < allPoints.size(); i++) {
+                    if (!first.sameLocation(allPoints.get(i))) {
+                        allSame = false;
+                        break;
+                    }
+                }
+                
+                return allSame;
+            }
         }
 
         return false;
