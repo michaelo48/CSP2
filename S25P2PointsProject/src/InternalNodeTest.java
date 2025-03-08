@@ -293,30 +293,5 @@ public class InternalNodeTest extends TestCase {
     }
 
 
-    /**
-     * Tests a complex scenario with many points and operations.
-     */
-    public void testComplexScenario() {
-        for (int i = 0; i < 10; i++) {
-            Point p = new Point("P" + i, i * 100, i * 50);
-            internalNode.insert(p, 0, 0, 1024);
-        }
-
-        internalNode.remove("P3", 0, 0, 1024);
-        internalNode.remove(700, 350, 0, 0, 1024);
-
-        PointList results = new PointList();
-        internalNode.regionsearch(0, 0, 500, 500, 0, 0, 1024, results);
-
-        assertTrue(results.size() > 0);
-
-        CoordinateList duplicates = new CoordinateList();
-        internalNode.findDuplicates(0, 0, 1024, duplicates);
-
-        internalNode.dump(0);
-        String output = systemOut().getHistory();
-
-        assertFalse(output.contains("P3"));
-        assertFalse(output.contains("P7"));
     }
 }

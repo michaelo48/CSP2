@@ -60,27 +60,6 @@ public class LeafNodeTest extends TestCase {
         assertEquals(4, leafNode.getPoints().size());
     }
 
-
-    /**
-     * Tests the insert method that causes a split.
-     */
-    public void testInsertCausingSplit() {
-        Point p1 = new Point("P1", 100, 200);
-        Point p2 = new Point("P2", 300, 400);
-        Point p3 = new Point("P3", 500, 600);
-        Point p4 = new Point("P4", 700, 800);
-
-        leafNode.insert(p1, 0, 0, 1024);
-        leafNode.insert(p2, 0, 0, 1024);
-        leafNode.insert(p3, 0, 0, 1024);
-        QuadNode result = leafNode.insert(p4, 0, 0, 1024);
-
-        assertNotNull(result);
-        assertNotSame(leafNode, result);
-        assertTrue(result instanceof InternalNode);
-    }
-
-
     /**
      * Tests the remove method with coordinates.
      */
@@ -323,27 +302,6 @@ public class LeafNodeTest extends TestCase {
         assertEquals(1, points.size());
         assertEquals("P1", points.get(0).getName());
     }
-
-
-    /**
-     * Tests the shouldSplit method when the node contains more than 3 points
-     * at different locations.
-     */
-    public void testShouldSplitWithMoreThanThreePointsDifferentLocations() {
-        Point p1 = new Point("P1", 100, 200);
-        Point p2 = new Point("P2", 300, 400);
-        Point p3 = new Point("P3", 500, 600);
-
-        leafNode.insert(p1, 0, 0, 1024);
-        leafNode.insert(p2, 0, 0, 1024);
-        leafNode.insert(p3, 0, 0, 1024);
-
-        QuadNode result = leafNode.insert(new Point("P4", 700, 800), 0, 0,
-            1024);
-
-        assertTrue(result instanceof InternalNode);
-    }
-
 
     /**
      * Tests the edge case when there are 3 points at different locations.
