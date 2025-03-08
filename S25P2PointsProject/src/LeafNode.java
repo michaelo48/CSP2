@@ -165,21 +165,27 @@ public class LeafNode implements QuadNode {
 
 
     @Override
-    public void dump(int indent) {
+    public int dump(int regionX, int regionY, int size, int indent) {
         // Print indentation
         for (int i = 0; i < indent; i++) {
             System.out.print("  ");
         }
 
-        System.out.println("Leaf with " + points.size() + " points:");
+        if (points.size() == 0) {
+            System.out.println("Node at " + regionX + " " + regionY + " " + size + " Empty");
+        } else {
+            System.out.println("Node at " + regionX + " " + regionY + " " + size + " Leaf");
 
-        // Print each point with additional indentation
-        for (int i = 0; i < points.size(); i++) {
-            for (int j = 0; j < indent + 1; j++) {
-                System.out.print("  ");
+            // Print each point with additional indentation
+            for (int i = 0; i < points.size(); i++) {
+                for (int j = 0; j < indent + 1; j++) {
+                    System.out.print("  ");
+                }
+                System.out.println(points.get(i).toString());
             }
-            System.out.println(points.get(i).toString());
         }
+        
+        return 1; // Count this node as printed
     }
 
 

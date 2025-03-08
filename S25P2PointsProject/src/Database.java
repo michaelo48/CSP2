@@ -39,7 +39,7 @@ public class Database {
     public void insert(String name, int x, int y) {
         // Validate coordinates
         if (x < 0 || y < 0 || x >= worldSize || y >= worldSize) {
-            System.out.println("Point rejected: (" + x + ", " + y + ")");
+            System.out.println("Point rejected: (" + name + ", " + x + ", " + y + ")");
             return;
         }
 
@@ -141,9 +141,9 @@ public class Database {
         for (int i = 0; i < points.size(); i++) {
             System.out.println(points.get(i).toString());
         }
-
         System.out.println(result.getNodesVisited()
             + " quadtree nodes visited");
+
     }
 
 
@@ -160,8 +160,7 @@ public class Database {
             System.out.println("(" + coord.getX() + ", " + coord.getY() + ")");
         }
 
-        System.out.println(result.getNodesVisited()
-            + " quadtree nodes visited");
+        
     }
 
 
@@ -192,7 +191,6 @@ public class Database {
      */
     public void dump() {
         skipList.dump();
-        System.out.println();
         quadTree.dump();
     }
 }

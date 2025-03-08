@@ -23,10 +23,11 @@ public class InternalNodeTest extends TestCase {
      * four empty children.
      */
     public void testConstructor() {
-        internalNode.dump(0);
+        int nodeCount = internalNode.dump(0, 0, 1024, 0);
         String output = systemOut().getHistory();
 
-        assertTrue(output.contains("Internal"));
+        assertTrue(output.contains("Node at 0 0 1024 Internal"));
+        assertEquals(5, nodeCount); // 1 internal node + 4 empty leaf nodes
 
         int emptyCount = 0;
         int index = 0;
@@ -231,11 +232,13 @@ public class InternalNodeTest extends TestCase {
         Point p1 = new Point("P1", 100, 100);
         internalNode.insert(p1, 0, 0, 1024);
 
-        internalNode.dump(2);
+        systemOut().clearHistory();
+        int nodeCount = internalNode.dump(0, 0, 1024, 2);
         String output = systemOut().getHistory();
 
-        assertTrue(output.contains("    Internal"));
+        assertTrue(output.contains("    Node at 0 0 1024 Internal"));
         assertTrue(output.contains("P1"));
+        assertTrue(nodeCount >= 2); // At least internal node + leaf node
     }
 
 
@@ -282,7 +285,8 @@ public class InternalNodeTest extends TestCase {
         internalNode.insert(seCorner, 0, 0, 1024);
         internalNode.insert(midPoint, 0, 0, 1024);
 
-        internalNode.dump(0);
+        systemOut().clearHistory();
+        int nodeCount = internalNode.dump(0, 0, 1024, 0);
         String output = systemOut().getHistory();
 
         assertTrue(output.contains("NWCorner"));
@@ -290,8 +294,6 @@ public class InternalNodeTest extends TestCase {
         assertTrue(output.contains("SWCorner"));
         assertTrue(output.contains("SECorner"));
         assertTrue(output.contains("Mid"));
-    }
-
-
+        assertTrue(nodeCount > 1);
     }
 }

@@ -335,18 +335,32 @@ public class InternalNode implements QuadNode {
 
 
     @Override
-    public void dump(int indent) {
+    public int dump(int regionX, int regionY, int size, int indent) {
         // Print indentation
         for (int i = 0; i < indent; i++) {
             System.out.print("  ");
         }
 
-        System.out.println("Internal");
+        System.out.println("Node at " + regionX + " " + regionY + " " + size + " Internal");
+        
+        int nodesCount = 1; // Count this node
 
         // Print each child with additional indentation
-        for (int i = 0; i < 4; i++) {
-            children[i].dump(indent + 1);
-        }
+        int halfSize = size / 2;
+        
+        // NW (0)
+        nodesCount += children[0].dump(regionX, regionY, halfSize, indent + 1);
+        
+        // NE (1)
+        nodesCount += children[1].dump(regionX + halfSize, regionY, halfSize, indent + 1);
+        
+        // SW (2)
+        nodesCount += children[2].dump(regionX, regionY + halfSize, halfSize, indent + 1);
+        
+        // SE (3)
+        nodesCount += children[3].dump(regionX + halfSize, regionY + halfSize, halfSize, indent + 1);
+        
+        return nodesCount;
     }
 
 

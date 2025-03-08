@@ -107,11 +107,11 @@ public class QuadTree {
 
 
     /**
-     * Dumps the Quadtree structure
+     * Dumps the Quadtree structure with modified format
      */
     public void dump() {
         System.out.println("QuadTree dump:");
-        root.dump(0);
-        System.out.println("QuadTree size is 1024x1024");
+        int nodeCount = root.dump(0, 0, worldSize, 0);
+        System.out.println(nodeCount + " quadtree nodes printed");
     }
 }

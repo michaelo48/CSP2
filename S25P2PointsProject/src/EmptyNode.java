@@ -87,12 +87,13 @@ public class EmptyNode implements QuadNode {
 
 
     @Override
-    public void dump(int indent) {
+    public int dump(int regionX, int regionY, int size, int indent) {
         // Print indentation
         for (int i = 0; i < indent; i++) {
             System.out.print("  ");
         }
-        System.out.println("Empty");
+        System.out.println("Node at " + regionX + " " + regionY + " " + size + " Empty");
+        return 1; // Count this node as printed
     }
 
 

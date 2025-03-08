@@ -261,6 +261,32 @@ public class LeafNodeTest extends TestCase {
 
 
     /**
+     * Tests the dump method.
+     */
+    public void testDump() {
+        // Empty leaf node
+        int nodeCount = leafNode.dump(100, 200, 512, 2);
+        String output = systemOut().getHistory();
+        
+        assertEquals(1, nodeCount);
+        assertTrue(output.contains("    Node at 100 200 512 Empty"));
+        
+        systemOut().clearHistory();
+        
+        // Leaf node with a point
+        Point p1 = new Point("P1", 100, 200);
+        leafNode.insert(p1, 0, 0, 1024);
+        
+        nodeCount = leafNode.dump(100, 200, 512, 2);
+        output = systemOut().getHistory();
+        
+        assertEquals(1, nodeCount);
+        assertTrue(output.contains("    Node at 100 200 512 Leaf"));
+        assertTrue(output.contains("P1"));
+    }
+
+
+    /**
      * Tests the isEmpty method.
      */
     public void testIsEmpty() {

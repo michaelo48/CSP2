@@ -248,7 +248,7 @@ public class SkipList<K extends Comparable<K>, V>
     public void dump() {
         System.out.println("SkipList dump:");
 
-        System.out.println("Node with depth " + (head.level + 1)
+        System.out.println("Node has depth " + (head.level + 1)
             + ", Value null");
 
         SkipNode current = head.forward[0];

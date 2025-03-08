@@ -119,12 +119,19 @@ public interface QuadNode extends Comparable<QuadNode> {
 
 
     /**
-     * Prints the node contents for dumping the quadtree
+     * Prints the node contents for dumping the quadtree with coordinates
      * 
+     * @param regionX
+     *            The x-coordinate of the current region
+     * @param regionY
+     *            The y-coordinate of the current region
+     * @param size
+     *            The size of the current region
      * @param indent
      *            Current indentation level
+     * @return Number of nodes printed
      */
-    public void dump(int indent);
+    public int dump(int regionX, int regionY, int size, int indent);
 
 
     /**

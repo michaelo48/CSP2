@@ -100,10 +100,11 @@ public class EmptyNodeTest extends TestCase {
      * Tests the dump method.
      */
     public void testDump() {
-        emptyNode.dump(2);
+        int nodesPrinted = emptyNode.dump(0, 0, 1024, 2);
         String output = systemOut().getHistory();
 
-        assertTrue(output.contains("    Empty"));
+        assertEquals(1, nodesPrinted);
+        assertTrue(output.contains("    Node at 0 0 1024 Empty"));
     }
 
 

@@ -28,6 +28,8 @@ public class DatabaseTest extends TestCase {
         String output = systemOut().getHistory();
         assertTrue(output.contains("SkipList dump:"));
         assertTrue(output.contains("QuadTree dump:"));
+        assertTrue(output.contains("Node at 0 0 1024 Empty"));
+        assertTrue(output.contains("1 quadtree nodes printed"));
     }
 
 
@@ -74,24 +76,28 @@ public class DatabaseTest extends TestCase {
         db.insert("Invalid1", -1, 100);
         String output = systemOut().getHistory();
         assertTrue(output.contains("Point rejected:"));
+        assertTrue(output.contains("Invalid1"));
         assertTrue(output.contains("-1"));
 
         systemOut().clearHistory();
         db.insert("Invalid2", 100, -5);
         output = systemOut().getHistory();
         assertTrue(output.contains("Point rejected:"));
+        assertTrue(output.contains("Invalid2"));
         assertTrue(output.contains("-5"));
 
         systemOut().clearHistory();
         db.insert("Invalid3", 1024, 100);
         output = systemOut().getHistory();
         assertTrue(output.contains("Point rejected:"));
+        assertTrue(output.contains("Invalid3"));
         assertTrue(output.contains("1024"));
 
         systemOut().clearHistory();
         db.insert("Invalid4", 100, 1024);
         output = systemOut().getHistory();
         assertTrue(output.contains("Point rejected:"));
+        assertTrue(output.contains("Invalid4"));
         assertTrue(output.contains("1024"));
     }
 
@@ -223,7 +229,6 @@ public class DatabaseTest extends TestCase {
         String output = systemOut().getHistory();
         assertTrue(output.contains("Duplicate points:"));
         assertTrue(output.contains("500, 500"));
-        assertTrue(output.contains("quadtree nodes visited"));
     }
 
 
@@ -266,6 +271,8 @@ public class DatabaseTest extends TestCase {
         assertTrue(output.contains("QuadTree dump:"));
         assertTrue(output.contains("DumpPoint1"));
         assertTrue(output.contains("DumpPoint2"));
+        assertTrue(output.contains("Node at 0 0 1024"));
+        assertTrue(output.contains("quadtree nodes printed"));
     }
 
 
@@ -343,13 +350,14 @@ public class DatabaseTest extends TestCase {
         db.duplicates();
         output = systemOut().getHistory();
         assertTrue(output.contains("Duplicate points:"));
-        assertTrue(output.contains("quadtree nodes visited"));
 
         systemOut().clearHistory();
         db.dump();
         output = systemOut().getHistory();
         assertTrue(output.contains("SkipList dump:"));
         assertTrue(output.contains("QuadTree dump:"));
+        assertTrue(output.contains("Node at 0 0 1024 Empty"));
+        assertTrue(output.contains("1 quadtree nodes printed"));
     }
 
 
@@ -398,5 +406,28 @@ public class DatabaseTest extends TestCase {
         db.duplicates();
         output = systemOut().getHistory();
         assertFalse(output.contains("500, 500"));
+    }
+    
+    /**
+     * Tests the QuadTree dump format specifically
+     */
+    public void testQuadTreeDumpFormat() {
+        // Test empty quadtree dump
+        systemOut().clearHistory();
+        db.dump();
+        String output = systemOut().getHistory();
+        assertTrue(output.contains("Node at 0 0 1024 Empty"));
+        assertTrue(output.contains("1 quadtree nodes printed"));
+        
+        // Test with some inserted points
+        db.insert("Point1", 100, 100);
+        db.insert("Point2", 800, 800);
+        
+        systemOut().clearHistory();
+        db.dump();
+        output = systemOut().getHistory();
+        assertTrue(output.contains("Node at 0 0 1024"));
+        // Should have more than 1 node now
+        assertTrue(output.contains("quadtree nodes printed"));
     }
 }
