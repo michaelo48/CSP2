@@ -1,5 +1,8 @@
 /**
  * Represents a point with a name and (x,y) coordinates
+ * 
+ * @author michaelo48
+ * @version 03.07.2025
  */
 public class Point {
     private String name;
@@ -68,9 +71,9 @@ public class Point {
     /**
      * Checks if this point is within a rectangle
      * 
-     * @param x
+     * @param x0
      *            The x-coordinate of the rectangle's top-left corner
-     * @param y
+     * @param y0
      *            The y-coordinate of the rectangle's top-left corner
      * @param w
      *            The width of the rectangle
@@ -78,9 +81,9 @@ public class Point {
      *            The height of the rectangle
      * @return True if the point is within the rectangle, false otherwise
      */
-    public boolean isInRectangle(int x, int y, int w, int h) {
-        return this.x >= x && this.x <= (x + w) && this.y >= y && this.y <= (y
-            + h);
+    public boolean isInRectangle(int x0, int y0, int w, int h) {
+        return this.x >= x0 && this.x <= (x0 + w) && this.y >= y0
+            && this.y <= (y0 + h);
     }
 
 

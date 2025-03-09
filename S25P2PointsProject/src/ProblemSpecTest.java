@@ -41,7 +41,7 @@ public class ProblemSpecTest extends TestCase {
     public void testPostedSample1() throws IOException {
         // Setting up all the parameters
         String[] args = new String[1];
-        args[0] = "SyntaxTest1.txt"; 
+        args[0] = "SyntaxTest1.txt";
 
         // Invoke main method of our Points Project
         PointsProject.main(args);

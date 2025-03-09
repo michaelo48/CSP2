@@ -7,18 +7,21 @@
 public class Coordinate {
     private int x;
     private int y;
-    
+
     /**
      * Creates a new coordinate
      * 
-     * @param x The x-coordinate
-     * @param y The y-coordinate
+     * @param x
+     *            The x-coordinate
+     * @param y
+     *            The y-coordinate
      */
     public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    
+
+
     /**
      * Gets the x-coordinate
      * 
@@ -27,7 +30,8 @@ public class Coordinate {
     public int getX() {
         return x;
     }
-    
+
+
     /**
      * Gets the y-coordinate
      * 
@@ -36,11 +40,13 @@ public class Coordinate {
     public int getY() {
         return y;
     }
-    
+
+
     /**
      * Checks if this coordinate equals another object
      * 
-     * @param obj The object to compare with
+     * @param obj
+     *            The object to compare with
      * @return True if equal, false otherwise
      */
     @Override
@@ -51,10 +57,11 @@ public class Coordinate {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Coordinate other = (Coordinate) obj;
+        Coordinate other = (Coordinate)obj;
         return x == other.x && y == other.y;
     }
-    
+
+
     /**
      * String representation of the coordinate
      * 

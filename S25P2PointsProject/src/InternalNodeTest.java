@@ -1,7 +1,7 @@
 import student.TestCase;
 
 /**
- * Tests the InternalNode class using mutation testing techniques.
+ * Tests the InternalNode class with enhanced test cases for mutation testing.
  * 
  * @author michaelo48
  * @version 03.07.2025
@@ -19,81 +19,118 @@ public class InternalNodeTest extends TestCase {
 
 
     /**
-     * Tests the constructor to ensure it properly initializes with
-     * four empty children.
+     * Tests the constructor and basic properties.
      */
     public void testConstructor() {
         int nodeCount = internalNode.dump(0, 0, 1024, 0);
         String output = systemOut().getHistory();
 
         assertTrue(output.contains("Node at 0 0 1024 Internal"));
-        assertEquals(5, nodeCount); // 1 internal node + 4 empty leaf nodes
+        assertEquals(5, nodeCount);
+        assertFalse(internalNode.isEmpty());
 
-        int emptyCount = 0;
-        int index = 0;
-        while ((index = output.indexOf("Empty", index)) != -1) {
-            emptyCount++;
-            index++;
-        }
-
+        int emptyCount = countSubstrings(output, "Empty");
         assertEquals(4, emptyCount);
     }
 
 
     /**
-     * Tests inserting multiple points and merging when appropriate.
+     * Helper method to count occurrences of a substring in a string.
      */
-    public void testInsertAndMerge() {
-        Point p1 = new Point("P1", 100, 100);
-        Point p2 = new Point("P2", 700, 100);
-        Point p3 = new Point("P3", 100, 700);
-
-        internalNode.insert(p1, 0, 0, 1024);
-        internalNode.insert(p2, 0, 0, 1024);
-        internalNode.insert(p3, 0, 0, 1024);
-
-        QuadNode result = internalNode;
-        assertSame(internalNode, result);
-
-        Point p4 = new Point("P4", 700, 700);
-        Point p5 = new Point("P5", 150, 150);
-
-        result = internalNode.insert(p4, 0, 0, 1024);
-        assertSame(internalNode, result);
-
-        result = internalNode.insert(p5, 0, 0, 1024);
-        assertSame(internalNode, result);
+    private int countSubstrings(String str, String subStr) {
+        int count = 0;
+        int index = 0;
+        while ((index = str.indexOf(subStr, index)) != -1) {
+            count++;
+            index++;
+        }
+        return count;
     }
 
 
     /**
-     * Tests the merge functionality with points at the same coordinates.
+     * Tests inserting points into different quadrants.
      */
-    public void testMergeWithSameCoordinates() {
-        Point p1 = new Point("P1", 100, 100);
-        Point p2 = new Point("P2", 700, 100);
-        Point p3 = new Point("P3", 100, 700);
+    public void testInsertQuadrants() {
+        insertPointInAllQuadrants();
 
-        internalNode.insert(p1, 0, 0, 1024);
-        internalNode.insert(p2, 0, 0, 1024);
-        internalNode.insert(p3, 0, 0, 1024);
+        systemOut().clearHistory();
+        int nodeCount = internalNode.dump(0, 0, 1024, 0);
+        String output = systemOut().getHistory();
 
-        Point p4 = new Point("P4", 100, 100);
-        QuadNode result = internalNode.insert(p4, 0, 0, 1024);
-        assertSame(internalNode, result);
+        assertTrue(output.contains("NW"));
+        assertTrue(output.contains("NE"));
+        assertTrue(output.contains("SW"));
+        assertTrue(output.contains("SE"));
+        assertEquals(5, nodeCount);
     }
 
 
     /**
-     * Tests the remove method with coordinates.
+     * Helper method to insert points in all quadrants.
      */
-    public void testRemoveByCoordinates() {
+    private void insertPointInAllQuadrants() {
+        internalNode.insert(new Point("NW", 100, 100), 0, 0, 1024);
+        internalNode.insert(new Point("NE", 800, 100), 0, 0, 1024);
+        internalNode.insert(new Point("SW", 100, 800), 0, 0, 1024);
+        internalNode.insert(new Point("SE", 800, 800), 0, 0, 1024);
+    }
+
+
+    /**
+     * Tests insertion that causes node splitting and handling points
+     * at the same location.
+     */
+    public void testAdvancedInsertion() {
+        for (int i = 0; i < 4; i++) {
+            Point p = new Point("P" + i, 100 + i * 30, 100 + i * 30);
+            internalNode.insert(p, 0, 0, 1024);
+        }
+
+        systemOut().clearHistory();
+        int nodeCount = internalNode.dump(0, 0, 1024, 0);
+
+        assertTrue(nodeCount > 5);
+
+        internalNode = new InternalNode();
+
+        for (int i = 0; i < 4; i++) {
+            Point p = new Point("SamePos" + i, 100, 100);
+            internalNode.insert(p, 0, 0, 1024);
+        }
+
+        systemOut().clearHistory();
+        nodeCount = internalNode.dump(0, 0, 1024, 0);
+        String output = systemOut().getHistory();
+
+        assertEquals(5, nodeCount);
+        for (int i = 0; i < 4; i++) {
+            assertTrue(output.contains("SamePos" + i));
+        }
+    }
+
+
+    /**
+     * Tests the remove methods (by coordinates and name).
+     */
+    public void testRemove() {
         Point point = new Point("ToRemove", 200, 200);
         internalNode.insert(point, 0, 0, 1024);
 
         KVPair<QuadNode, Point> result = internalNode.remove(200, 200, 0, 0,
             1024);
+        assertNotNull(result);
+        assertNotNull(result.key());
+        assertNotNull(result.value());
+        assertEquals("ToRemove", result.value().getName());
 
+        internalNode.insert(point, 0, 0, 1024);
+        result = internalNode.remove(999, 999, 0, 0, 1024);
+        assertNotNull(result);
+        assertNotNull(result.key());
+        assertNull(result.value());
+
+        result = internalNode.remove("ToRemove", 0, 0, 1024);
         assertNotNull(result);
         assertNotNull(result.key());
         assertNotNull(result.value());
@@ -102,50 +139,7 @@ public class InternalNodeTest extends TestCase {
 
 
     /**
-     * Tests the remove method removing a point that doesn't exist.
-     */
-    public void testRemoveNonExistentByCoordinates() {
-        KVPair<QuadNode, Point> result = internalNode.remove(200, 200, 0, 0,
-            1024);
-
-        assertNotNull(result);
-        assertNotNull(result.key());
-        assertNull(result.value());
-    }
-
-
-    /**
-     * Tests the remove method with a name.
-     */
-    public void testRemoveByName() {
-        Point point = new Point("ToRemove", 200, 200);
-        internalNode.insert(point, 0, 0, 1024);
-
-        KVPair<QuadNode, Point> result = internalNode.remove("ToRemove", 0, 0,
-            1024);
-
-        assertNotNull(result);
-        assertNotNull(result.key());
-        assertNotNull(result.value());
-        assertEquals("ToRemove", result.value().getName());
-    }
-
-
-    /**
-     * Tests the remove method removing a point by name that doesn't exist.
-     */
-    public void testRemoveNonExistentByName() {
-        KVPair<QuadNode, Point> result = internalNode.remove("NonExistent", 0,
-            0, 1024);
-
-        assertNotNull(result);
-        assertNotNull(result.key());
-        assertNull(result.value());
-    }
-
-
-    /**
-     * Tests removing a point and then merging the node.
+     * Tests removing points that triggers merging of nodes.
      */
     public void testRemoveAndMerge() {
         Point p1 = new Point("P1", 100, 100);
@@ -157,47 +151,37 @@ public class InternalNodeTest extends TestCase {
         internalNode.insert(p3, 0, 0, 1024);
 
         KVPair<QuadNode, Point> result = internalNode.remove("P2", 0, 0, 1024);
-
         assertNotNull(result);
-        assertNotNull(result.key());
-        assertNotNull(result.value());
-        assertEquals("P2", result.value().getName());
+
+        assertTrue(result.key() instanceof LeafNode);
+        LeafNode leaf = (LeafNode)result.key();
+        assertEquals(2, leaf.getPoints().size());
     }
 
 
     /**
-     * Tests the regionsearch method.
+     * Tests the regionsearch method with various scenarios.
      */
     public void testRegionsearch() {
-        Point p1 = new Point("P1", 100, 100);
-        Point p2 = new Point("P2", 700, 100);
-        Point p3 = new Point("P3", 100, 700);
-
-        internalNode.insert(p1, 0, 0, 1024);
-        internalNode.insert(p2, 0, 0, 1024);
-        internalNode.insert(p3, 0, 0, 1024);
+        insertPointInAllQuadrants();
 
         PointList results = new PointList();
-        int visited = internalNode.regionsearch(50, 50, 100, 100, 0, 0, 1024,
+        int visited = internalNode.regionsearch(0, 0, 512, 512, 0, 0, 1024,
             results);
-
-        assertTrue(visited >= 1);
+        assertTrue(visited >= 2);
         assertEquals(1, results.size());
-        assertEquals("P1", results.get(0).getName());
-    }
+        assertEquals("NW", results.get(0).getName());
 
-
-    /**
-     * Tests the regionsearch method with no intersection.
-     */
-    public void testRegionsearchNoIntersection() {
-        Point p1 = new Point("P1", 100, 100);
-        internalNode.insert(p1, 0, 0, 1024);
-
-        PointList results = new PointList();
-        int visited = internalNode.regionsearch(500, 500, 100, 100, 0, 0, 1024,
+        results = new PointList();
+        visited = internalNode.regionsearch(400, 400, 400, 400, 0, 0, 1024,
             results);
+        assertTrue(visited >= 5);
+        assertEquals(1, results.size());
+        assertEquals("SE", results.get(0).getName());
 
+        results = new PointList();
+        visited = internalNode.regionsearch(900, 900, 100, 100, 0, 0, 1024,
+            results);
         assertTrue(visited >= 1);
         assertEquals(0, results.size());
     }
@@ -209,91 +193,146 @@ public class InternalNodeTest extends TestCase {
     public void testFindDuplicates() {
         Point p1 = new Point("P1", 100, 100);
         Point p2 = new Point("P2", 100, 100);
-        Point p3 = new Point("P3", 300, 300);
+        Point p3 = new Point("P3", 700, 700);
+        Point p4 = new Point("P4", 700, 700);
 
         internalNode.insert(p1, 0, 0, 1024);
         internalNode.insert(p2, 0, 0, 1024);
         internalNode.insert(p3, 0, 0, 1024);
+        internalNode.insert(p4, 0, 0, 1024);
 
         CoordinateList duplicates = new CoordinateList();
         int visited = internalNode.findDuplicates(0, 0, 1024, duplicates);
 
-        assertTrue(visited >= 1);
-        assertEquals(1, duplicates.size());
-        assertEquals(100, duplicates.get(0).getX());
-        assertEquals(100, duplicates.get(0).getY());
+        assertTrue(visited >= 5);
+        assertEquals(2, duplicates.size());
+
+        boolean found100 = false;
+        boolean found700 = false;
+
+        for (int i = 0; i < duplicates.size(); i++) {
+            Coordinate coord = duplicates.get(i);
+            if (coord.getX() == 100 && coord.getY() == 100)
+                found100 = true;
+            else if (coord.getX() == 700 && coord.getY() == 700)
+                found700 = true;
+        }
+
+        assertTrue(found100);
+        assertTrue(found700);
+    }
+    
+    /**
+     * Tests quadrant determination at boundaries using insert and regionsearch.
+     * This test specifically targets the getQuadrant method by testing boundary cases.
+     */
+    public void testQuadrantBoundaries() {
+        internalNode = new InternalNode();
+        
+        testQuadrantWithSize(1024);
+        
+        internalNode = new InternalNode();
+        testQuadrantWithSize(1023);
+        
+        internalNode = new InternalNode();
+        testQuadrantWithSmallSize();
+    }
+    
+    /**
+     * Helper method to test quadrant determination with a specific region size
+     * @param size The size of the region to test with
+     */
+    private void testQuadrantWithSize(int size) {
+        int midPoint = size / 2;
+        
+        Point nw = new Point("NW", midPoint - 1, midPoint - 1);
+        Point ne = new Point("NE", midPoint, midPoint - 1);
+        Point sw = new Point("SW", midPoint - 1, midPoint);
+        Point se = new Point("SE", midPoint, midPoint);
+        
+        internalNode.insert(nw, 0, 0, size);
+        internalNode.insert(ne, 0, 0, size);
+        internalNode.insert(sw, 0, 0, size);
+        internalNode.insert(se, 0, 0, size);
+        
+        PointList results = new PointList();
+        internalNode.regionsearch(0, 0, midPoint - 1, midPoint - 1, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("NW", results.get(0).getName());
+        
+        results = new PointList();
+        internalNode.regionsearch(midPoint, 0, midPoint, midPoint - 1, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("NE", results.get(0).getName());
+        
+        results = new PointList();
+        internalNode.regionsearch(0, midPoint, midPoint - 1, midPoint, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("SW", results.get(0).getName());
+        
+        results = new PointList();
+        internalNode.regionsearch(midPoint, midPoint, midPoint, midPoint, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("SE", results.get(0).getName());
+    }
+    
+    /**
+     * Tests quadrant determination with a very small region size
+     * to specifically target the integer division in getQuadrant
+     */
+    private void testQuadrantWithSmallSize() {
+        int size = 4;
+        int midPoint = size / 2;
+        
+        Point nw = new Point("SmallNW", 1, 1);
+        Point ne = new Point("SmallNE", 2, 1);
+        Point sw = new Point("SmallSW", 1, 2);
+        Point se = new Point("SmallSE", 2, 2);
+        
+        internalNode.insert(nw, 0, 0, size);
+        internalNode.insert(ne, 0, 0, size);
+        internalNode.insert(sw, 0, 0, size);
+        internalNode.insert(se, 0, 0, size);
+        
+        PointList results = new PointList();
+        internalNode.regionsearch(1, 1, 1, 1, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("SmallNW", results.get(0).getName());
+        
+        results = new PointList();
+        internalNode.regionsearch(2, 1, 1, 1, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("SmallNE", results.get(0).getName());
+        
+        results = new PointList();
+        internalNode.regionsearch(1, 2, 1, 1, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("SmallSW", results.get(0).getName());
+        
+        results = new PointList();
+        internalNode.regionsearch(2, 2, 1, 1, 0, 0, size, results);
+        assertEquals(1, results.size());
+        assertEquals("SmallSE", results.get(0).getName());
     }
 
 
     /**
-     * Tests the dump method.
+     * Tests methods related to node comparison and boundary conditions.
      */
-    public void testDump() {
-        Point p1 = new Point("P1", 100, 100);
-        internalNode.insert(p1, 0, 0, 1024);
-
-        systemOut().clearHistory();
-        int nodeCount = internalNode.dump(0, 0, 1024, 2);
-        String output = systemOut().getHistory();
-
-        assertTrue(output.contains("    Node at 0 0 1024 Internal"));
-        assertTrue(output.contains("P1"));
-        assertTrue(nodeCount >= 2); // At least internal node + leaf node
-    }
-
-
-    /**
-     * Tests the isEmpty method.
-     */
-    public void testIsEmpty() {
-        assertFalse(internalNode.isEmpty());
-    }
-
-
-    /**
-     * Tests the compareTo method with various node types.
-     */
-    public void testCompareTo() {
+    public void testMiscellaneous() {
         EmptyNode emptyNode = EmptyNode.getInstance();
         assertEquals(1, internalNode.compareTo(emptyNode));
 
         LeafNode leafNode = new LeafNode();
+        leafNode.insert(new Point("P1", 100, 200), 0, 0, 1024);
         assertEquals(1, internalNode.compareTo(leafNode));
 
-        InternalNode otherInternalNode = new InternalNode();
-        assertEquals(0, internalNode.compareTo(otherInternalNode));
-    }
-
-
-    /**
-     * Tests boundary conditions for the quadrant determination.
-     */
-    public void testQuadrantBoundaries() {
-        int midX = 512;
-        int midY = 512;
-
-        Point nwCorner = new Point("NWCorner", 0, 0);
-        Point neCorner = new Point("NECorner", 1023, 0);
-        Point swCorner = new Point("SWCorner", 0, 1023);
-        Point seCorner = new Point("SECorner", 1023, 1023);
-
-        Point midPoint = new Point("Mid", midX, midY);
-
-        internalNode.insert(nwCorner, 0, 0, 1024);
-        internalNode.insert(neCorner, 0, 0, 1024);
-        internalNode.insert(swCorner, 0, 0, 1024);
-        internalNode.insert(seCorner, 0, 0, 1024);
-        internalNode.insert(midPoint, 0, 0, 1024);
+        Point center = new Point("Center", 512, 512);
+        internalNode.insert(center, 0, 0, 1024);
 
         systemOut().clearHistory();
-        int nodeCount = internalNode.dump(0, 0, 1024, 0);
+        internalNode.dump(0, 0, 1024, 0);
         String output = systemOut().getHistory();
-
-        assertTrue(output.contains("NWCorner"));
-        assertTrue(output.contains("NECorner"));
-        assertTrue(output.contains("SWCorner"));
-        assertTrue(output.contains("SECorner"));
-        assertTrue(output.contains("Mid"));
-        assertTrue(nodeCount > 1);
+        assertTrue(output.contains("Center"));
     }
 }

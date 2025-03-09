@@ -32,7 +32,7 @@ public class PointsProject {
         }
         Database myWorld = new Database();
 
-    CommandProcessor processor = new CommandProcessor(myWorld);
-    processor.readCmdFile(theFile);
+        CommandProcessor processor = new CommandProcessor(myWorld);
+        processor.readCmdFile(theFile);
     }
 }

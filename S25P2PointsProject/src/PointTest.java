@@ -141,7 +141,7 @@ public class PointTest extends TestCase {
      * Tests the toString method.
      */
     public void testToString() {
-        assertEquals("(TestPoint, 100, 200)", point.toString());
+        assertEquals("TestPoint 100 200", point.toString());
     }
 
 

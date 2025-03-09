@@ -223,7 +223,7 @@ public class SkipListTest extends TestCase {
         sl.dump();
         String output = systemOut().getHistory();
         assertTrue(output.contains("SkipList dump:"));
-        assertTrue(output.contains("Node with depth 1, Value null"));
+        assertTrue(output.contains("Node has depth 1 value null"));
         assertTrue(output.contains("SkipList size is: 0"));
 
         systemOut().clearHistory();
@@ -233,7 +233,6 @@ public class SkipListTest extends TestCase {
         sl.dump();
         output = systemOut().getHistory();
         assertTrue(output.contains("SkipList dump:"));
-        assertTrue(output.contains("Node with depth 1, Value null"));
-
+        assertTrue(output.contains("Node has depth 1 value null"));
     }
 }

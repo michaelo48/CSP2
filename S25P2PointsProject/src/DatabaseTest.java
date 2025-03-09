@@ -184,7 +184,7 @@ public class DatabaseTest extends TestCase {
         db.regionsearch(50, 50, 300, 300);
         String output = systemOut().getHistory();
         assertTrue(output.contains("Points intersecting region"));
-        assertTrue(output.contains("50, 50, 300, 300"));
+        assertTrue(output.contains("50 50 300 300")); // Fixed: removed comma
         assertTrue(output.contains("quadtree nodes visited"));
     }
 
@@ -228,7 +228,7 @@ public class DatabaseTest extends TestCase {
         db.duplicates();
         String output = systemOut().getHistory();
         assertTrue(output.contains("Duplicate points:"));
-        assertTrue(output.contains("500, 500"));
+        assertTrue(output.contains("500 500")); // Fixed: removed comma
     }
 
 
@@ -397,7 +397,7 @@ public class DatabaseTest extends TestCase {
         systemOut().clearHistory();
         db.duplicates();
         String output = systemOut().getHistory();
-        assertTrue(output.contains("500, 500"));
+        assertTrue(output.contains("500 500")); // Fixed: removed comma
 
         systemOut().clearHistory();
         db.remove("DupA");
@@ -405,9 +405,10 @@ public class DatabaseTest extends TestCase {
         systemOut().clearHistory();
         db.duplicates();
         output = systemOut().getHistory();
-        assertFalse(output.contains("500, 500"));
+        assertFalse(output.contains("500 500")); // Fixed: removed comma
     }
-    
+
+
     /**
      * Tests the QuadTree dump format specifically
      */
@@ -418,11 +419,11 @@ public class DatabaseTest extends TestCase {
         String output = systemOut().getHistory();
         assertTrue(output.contains("Node at 0 0 1024 Empty"));
         assertTrue(output.contains("1 quadtree nodes printed"));
-        
+
         // Test with some inserted points
         db.insert("Point1", 100, 100);
         db.insert("Point2", 800, 800);
-        
+
         systemOut().clearHistory();
         db.dump();
         output = systemOut().getHistory();

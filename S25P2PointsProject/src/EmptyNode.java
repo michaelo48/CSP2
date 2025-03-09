@@ -92,7 +92,8 @@ public class EmptyNode implements QuadNode {
         for (int i = 0; i < indent; i++) {
             System.out.print("  ");
         }
-        System.out.println("Node at " + regionX + " " + regionY + " " + size + " Empty");
+        System.out.println("Node at " + regionX + " " + regionY + " " + size
+            + " Empty");
         return 1; // Count this node as printed
     }
 
