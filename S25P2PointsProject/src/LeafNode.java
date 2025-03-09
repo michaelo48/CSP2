@@ -22,15 +22,15 @@ public class LeafNode implements QuadNode {
      * @return True if the node should be split, false otherwise
      */
     private boolean shouldSplit() {
+        // Split if there are more than 3 points
         if (points.size() <= 3) {
             return false;
         }
 
-        int x = points.get(0).getX();
-        int y = points.get(0).getY();
-
+        // Check if all points are at the same location
+        Point firstPoint = points.get(0);
         for (int i = 1; i < points.size(); i++) {
-            if (points.get(i).getX() != x || points.get(i).getY() != y) {
+            if (!firstPoint.sameLocation(points.get(i))) {
                 return true;
             }
         }
