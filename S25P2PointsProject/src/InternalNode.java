@@ -206,20 +206,19 @@ public class InternalNode implements QuadNode {
                 }
             }
             else {
-                return false; // If any child is an internal node, don't merge
+                return false;
             }
         }
 
         if (emptyCount == 4) {
-            return true; // All children are empty, merge to an empty node
+            return true;
         }
 
         if (emptyCount + leafCount == 4) {
             if (totalPoints <= 3) {
-                return true; // 3 or fewer total points, merge to a leaf node
+                return true;
             }
 
-            // Check if all points are at the same location
             if (totalPoints > 0) {
                 Point first = allPoints.get(0);
                 boolean allSame = true;
@@ -231,7 +230,7 @@ public class InternalNode implements QuadNode {
                     }
                 }
 
-                return allSame; // If all points at same location, merge to a leaf node
+                return allSame;
             }
         }
 
@@ -343,17 +342,18 @@ public class InternalNode implements QuadNode {
         PointList results) {
         int nodesVisited = 1;
 
-        // Check if this node's region intersects with the query rectangle
         if (!isIntersecting(x, y, w, h, regionX, regionY, size)) {
             return nodesVisited;
         }
 
-        // For each child that intersects with the query rectangle, search it
         for (int i = 0; i < 4; i++) {
             int[] childCoords = getChildCoordinates(i, regionX, regionY, size);
 
-            nodesVisited += children[i].regionsearch(x, y, w, h,
-                childCoords[0], childCoords[1], childCoords[2], results);
+            if (isIntersecting(x, y, w, h, childCoords[0], childCoords[1],
+                childCoords[2])) {
+                nodesVisited += children[i].regionsearch(x, y, w, h,
+                    childCoords[0], childCoords[1], childCoords[2], results);
+            }
         }
 
         return nodesVisited;

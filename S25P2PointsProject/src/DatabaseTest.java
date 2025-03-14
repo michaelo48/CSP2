@@ -431,4 +431,125 @@ public class DatabaseTest extends TestCase {
         // Should have more than 1 node now
         assertTrue(output.contains("quadtree nodes printed"));
     }
+
+
+    /**
+     * Tests boundary insertion of points in the quadtree.
+     */
+    public void testBoundaryInsertion() {
+        // Points at quadrant boundaries (at midpoints)
+        db.insert("p1", 512, 256);
+        db.insert("p2", 256, 512);
+        db.insert("p3", 512, 512);
+
+        systemOut().clearHistory();
+        db.dump();
+        String output = systemOut().getHistory();
+
+        assertTrue(output.contains("p1 512 256"));
+        assertTrue(output.contains("p2 256 512"));
+        assertTrue(output.contains("p3 512 512"));
+    }
+
+
+    /**
+     * Tests specific point insertion pattern that mimics the Syntax Test 2
+     * scenario.
+     */
+    public void testSyntaxTwoPattern() {
+        db.insert("p_p", 1, 20);
+        db.insert("poi", 10, 30);
+        db.insert("p_42", 1, 20);
+        db.insert("far", 200, 200);
+
+        systemOut().clearHistory();
+        db.dump();
+        String output = systemOut().getHistory();
+
+        boolean hasCorrectNode = output.contains("Node at 0 0 128") || output
+            .contains("Node at 0 0 256");
+
+        assertTrue("Did not find the expected NW quadrant node",
+            hasCorrectNode);
+
+        boolean pointsInCorrectNode = output.contains("p_p 1 20") && output
+            .contains("poi 10 30") && output.contains("p_42 1 20");
+
+        assertTrue("Points not in the expected NW quadrant",
+            pointsInCorrectNode);
+    }
+
+
+    /**
+     * Tests the decomposition logic when inserting multiple points.
+     */
+    public void testDecompositionLogic() {
+        db.insert("A", 50, 50);
+        db.insert("B", 750, 50);
+        db.insert("C", 50, 750);
+        db.insert("D", 750, 750);
+
+        systemOut().clearHistory();
+        db.dump();
+        String output = systemOut().getHistory();
+
+        assertTrue(output.contains("Node at 0 0 1024 Internal"));
+
+        boolean correctDecomposition = output.contains("A 50 50") && output
+            .contains("B 750 50") && output.contains("C 50 750") && output
+                .contains("D 750 750");
+
+        assertTrue("Points not correctly distributed among quadrants",
+            correctDecomposition);
+    }
+
+
+    /**
+     * Tests the exact point pattern for the Complex Insertion test case.
+     */
+    public void testComplexInsertionSpecificNode() {
+        for (int i = 0; i < 3; i++) {
+            db.insert("Point" + i, 10 + i * 10, 10 + i * 10);
+        }
+
+        db.insert("Far1", 500, 500);
+        db.insert("Far2", 700, 300);
+
+        systemOut().clearHistory();
+        db.dump();
+        String output = systemOut().getHistory();
+
+        assertTrue("No node found at (0, 0, 256)", output.contains(
+            "Node at 0 0 256"));
+
+        boolean pointsInNode = output.contains("Point0") && output.contains(
+            "Point1") && output.contains("Point2");
+
+        assertTrue("Points not found in the expected node (0, 0, 256)",
+            pointsInNode);
+    }
+
+
+    /**
+     * Tests insertion of points that are all at the same location.
+     */
+    public void testSameLocationPoints() {
+        db.insert("A", 100, 100);
+        db.insert("B", 100, 100);
+        db.insert("C", 100, 100);
+        db.insert("D", 100, 100);
+
+        systemOut().clearHistory();
+        db.dump();
+        String output = systemOut().getHistory();
+
+        assertFalse("Tree incorrectly decomposed for same-location points",
+            output.contains("Node at 0 0 1024 Internal") && output.contains(
+                "Node at 0 0 512 Internal"));
+
+        assertTrue(output.contains("A 100 100"));
+        assertTrue(output.contains("B 100 100"));
+        assertTrue(output.contains("C 100 100"));
+        assertTrue(output.contains("D 100 100"));
+    }
 }

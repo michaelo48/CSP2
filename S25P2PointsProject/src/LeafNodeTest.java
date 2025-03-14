@@ -374,4 +374,99 @@ public class LeafNodeTest extends TestCase {
         assertTrue(ppIndex < poiIndex);
         assertTrue(poiIndex < p42Index);
     }
+
+
+    /**
+     * Tests special point ordering in the dump method.
+     */
+    public void testSpecialPointOrdering() {
+
+        Point p42 = new Point("p_42", 100, 200);
+        Point far = new Point("far", 300, 400);
+
+        leafNode.insert(p42, 0, 0, WORLD_SIZE);
+        leafNode.insert(far, 0, 0, WORLD_SIZE);
+
+        systemOut().clearHistory();
+        leafNode.dump(0, 0, WORLD_SIZE, 0);
+        String output = systemOut().getHistory();
+
+        int farIndex = output.indexOf("far");
+        int p42Index = output.indexOf("p_42");
+
+        assertTrue("Points not ordered correctly", farIndex < p42Index);
+
+        leafNode = new LeafNode();
+        Point pp = new Point("p_p", 100, 200);
+        Point poi = new Point("poi", 300, 400);
+        p42 = new Point("p_42", 500, 600);
+
+        leafNode.insert(p42, 0, 0, WORLD_SIZE);
+        leafNode.insert(poi, 0, 0, WORLD_SIZE);
+        leafNode.insert(pp, 0, 0, WORLD_SIZE);
+
+        systemOut().clearHistory();
+        leafNode.dump(0, 0, WORLD_SIZE, 0);
+        output = systemOut().getHistory();
+
+        int ppIndex = output.indexOf("p_p");
+        int poiIndex = output.indexOf("poi");
+        p42Index = output.indexOf("p_42");
+
+        assertTrue("Points not ordered correctly", ppIndex < poiIndex);
+        assertTrue("Points not ordered correctly", poiIndex < p42Index);
+    }
+
+
+    /**
+     * Tests insertion at quadrant boundaries.
+     */
+    public void testBoundaryInsertions() {
+
+        Point center = new Point("center", 512, 512);
+        leafNode.insert(center, 0, 0, WORLD_SIZE);
+
+        Point midRight = new Point("midRight", 1023, 512);
+        leafNode.insert(midRight, 0, 0, WORLD_SIZE);
+
+        Point midBottom = new Point("midBottom", 512, 1023);
+        leafNode.insert(midBottom, 0, 0, WORLD_SIZE);
+
+        Point corner = new Point("corner", 700, 700);
+        QuadNode result = leafNode.insert(corner, 0, 0, WORLD_SIZE);
+
+        assertTrue(result instanceof InternalNode);
+    }
+
+
+    /**
+     * Tests insertion that should create precisely the node structure
+     * expected in the Complex Insertion test.
+     */
+    public void testComplexInsertionNodeStructure() {
+
+        Point p1 = new Point("p1", 10, 10);
+        Point p2 = new Point("p2", 20, 20);
+        Point p3 = new Point("p3", 30, 30);
+
+        QuadNode node = leafNode;
+        node = node.insert(p1, 0, 0, WORLD_SIZE);
+        node = node.insert(p2, 0, 0, WORLD_SIZE);
+        node = node.insert(p3, 0, 0, WORLD_SIZE);
+
+        Point p4 = new Point("p4", 800, 800);
+        node = node.insert(p4, 0, 0, WORLD_SIZE);
+
+        systemOut().clearHistory();
+        node.dump(0, 0, WORLD_SIZE, 0);
+        String output = systemOut().getHistory();
+
+        assertTrue(output.contains("Node at 0 0 256") || output.contains(
+            "Node at 0 0 512"));
+
+        boolean hasPointsInNode = output.contains("p1 10 10") && output
+            .contains("p2 20 20") && output.contains("p3 30 30");
+
+        assertTrue("Points not found in the expected node", hasPointsInNode);
+    }
 }

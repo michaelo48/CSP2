@@ -258,4 +258,91 @@ public class CommandProcessorTest extends TestCase {
         assertTrue(systemOut().getHistory().contains("Unrecognized command"));
         systemOut().clearHistory();
     }
+
+
+    /**
+     * Tests the specific command pattern for Syntax Test 2.
+     */
+    public void testSyntaxCommandPattern() {
+        commandProcessor.processor("insert p_p 1 20");
+        commandProcessor.processor("insert poi 10 30");
+        commandProcessor.processor("insert p_42 1 20");
+        commandProcessor.processor("insert far 200 200");
+
+        systemOut().clearHistory();
+        commandProcessor.processor("dump");
+        String output = systemOut().getHistory();
+
+        assertTrue("Missing p_p point in dump", output.contains("p_p 1 20"));
+        assertTrue("Missing poi point in dump", output.contains("poi 10 30"));
+        assertTrue("Missing p_42 point in dump", output.contains("p_42 1 20"));
+        assertTrue("Missing far point in dump", output.contains("far 200 200"));
+
+        assertTrue("Missing expected tree structure", output.contains(
+            "Node at 0 0 128") || output.contains("Node at 0 0 256"));
+    }
+
+
+    /**
+     * Tests the region search with specific focus on node visitation count.
+     */
+    /**
+     * Tests the region search with specific focus on node visitation count.
+     */
+    public void testRegionSearchNodeCount() {
+        commandProcessor.processor("insert A 100 100");
+        commandProcessor.processor("insert B 300 100");
+        commandProcessor.processor("insert C 500 500");
+        commandProcessor.processor("insert D 700 700");
+
+        systemOut().clearHistory();
+        commandProcessor.processor("regionsearch 0 0 200 200");
+        String searchOutput = systemOut().getHistory();
+
+        assertTrue("Region search should find point A", searchOutput.contains(
+            "Point found A 100 100"));
+        assertFalse("Region search should not find point C", searchOutput
+            .contains("Point found C 500 500"));
+
+        assertTrue("No node count found", searchOutput.contains(
+            "nodes visited"));
+
+        assertTrue("Output format incorrect", searchOutput.matches(
+            "(?s).*\\d+\\s+quadtree nodes visited.*"));
+    }
+
+
+    /**
+     * Tests the exact sequence for insertion and querying that
+     * matches Syntax Test 2.
+     */
+    public void testSyntaxTestTwoFull() {
+        commandProcessor.processor("insert p_p 1 20");
+        commandProcessor.processor("insert poi 10 30");
+        commandProcessor.processor("insert p_42 1 20");
+        commandProcessor.processor("insert far 200 200");
+        commandProcessor.processor("dump");
+        commandProcessor.processor("duplicates");
+        commandProcessor.processor("search p_p");
+        commandProcessor.processor("regionsearch 0 0 25 25");
+        commandProcessor.processor("remove p_p");
+        commandProcessor.processor("remove 10 30");
+        commandProcessor.processor("duplicates");
+        commandProcessor.processor("dump");
+
+        String output = systemOut().getHistory();
+
+        assertTrue("Region search should find p_42", output.contains(
+            "Point found p_42 1 20"));
+
+        String dumpPart = output.substring(output.lastIndexOf("dump"));
+        assertTrue("Final dump missing far point", dumpPart.contains(
+            "far 200 200"));
+        assertTrue("Final dump missing p_42 point", dumpPart.contains(
+            "p_42 1 20"));
+
+        boolean hasDuplicates = output.contains("Duplicate points:")
+            && output.contains("1 20");
+        assertTrue("Duplicates at (1, 20) not identified", hasDuplicates);
+    }
 }
